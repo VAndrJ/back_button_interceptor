@@ -14,6 +14,7 @@ import 'merge_sort.dart';
 ///
 /// For more info, see: https://pub.dartlang.org/packages/back_button_interceptor
 abstract class BackButtonInterceptor implements WidgetsBinding {
+  static final List<_FunctionWithZIndex> _tempInterceptors = [];
   static final List<_FunctionWithZIndex> _interceptors = [];
   static final InterceptorResults results = InterceptorResults();
 
@@ -28,6 +29,16 @@ abstract class BackButtonInterceptor implements WidgetsBinding {
 
   static Future<void> Function(String) handlePushRouteFunction =
       WidgetsBinding.instance.handlePushRoute;
+  
+  static void pauseAll() {
+    _tempInterceptors.addAll(_interceptors);
+    _interceptors.clear();
+  }
+  
+  static void continueAll() {
+    _interceptors.addAll(_tempInterceptors);
+    _tempInterceptors.clear();
+  }
 
   /// Sets a function to be called when the back button is tapped.
   /// This function may perform some useful work, and then, if it returns true,
